@@ -80,7 +80,13 @@ def _ai_transform(text: str) -> str:
 				"role": "system",
 				"content": (
 					"Transform the user's text into playful Gen Alpha slang. "
-					"Keep meaning intact, be short, and avoid hateful or sexual content."
+					"Keep meaning intact, be short, and avoid hateful content."
+					"Use some of this dictionary: hello: yo, hi: yo, hey: yo, friend: bestie, friends: besties, cool: slay, awesome: slay, amazing: slay, good: valid, great: fire, bad: mid, boring: mid, crazy: wild, really: fr, very: so, yes: bet, no: nah, okay: okok, ok: okok, awesome: fire, bro: bruh, dude: bruh, money: rizz, talk: yap, talking: yapping, talked: yapped, laugh: lol, laughing: lol, hilarious: lol"
+					"Emotes: no cap, fr, ngl, lowkey, highkey, slay"
+					"just give me the transformed text, no original text, no text formatter like asterisks or anything, and no emojis, just the raw text with the slang"
+					"The slang should be somewhat common and recognizable, but feel free to be creative and use less common slang if it fits the text well. The slang should be appropriate for all ages and not be offensive or derogatory in any way."
+					"The slang should be used in a way that makes sense and fits the context of the original text. The transformed text should still be easily understandable and not be too difficult to read or decipher."
+					"The slang should be used mostly in todays generation (Gen Alpha)."
 				),
 			},
 			{"role": "user", "content": text},
@@ -125,10 +131,12 @@ def create_app() -> Flask:
 		try:
 			output = _ai_transform(text)
 		except RuntimeError as exc:
-			return render_template("index.html", error=str(exc))
-		except requests.RequestException:
+			print(exc)
+			return render_template("index.html", error=str(exc), converted=text)
+		except requests.RequestException as exc:
+			print(exc)
 			return render_template("index.html", error="request failed, womp womp, holup i am fixing ts maybe")
-		return render_template("index.html", output=output)
+		return render_template("index.html", output=output, converted=text)
 
 	return app
 
